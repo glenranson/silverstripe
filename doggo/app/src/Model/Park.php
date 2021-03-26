@@ -4,6 +4,9 @@ namespace Doggo\Model;
 
 use JsonSerializable;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Assets\Image;
+use SilverStripe\Assets\File;
+use SilverStripe\AssetAdmin\Forms\UploadField;
 
 class Park extends DataObject implements JsonSerializable
 {
@@ -14,7 +17,7 @@ class Park extends DataObject implements JsonSerializable
         'Latitude' => 'Decimal(9,6)',
         'Longitude' => 'Decimal(9,6)',
         'Notes' => 'Text',
-        'Provider' => "Enum(array('Wellington City Council'))",
+        'Provider' => "Enum(array('Wellington City Council', 'Palmerston North City Council'))",
         'ProviderCode' => 'Varchar(100)',
         'GeoJson' => 'Text',
         'FeatureOnOffLeash' => "Enum(array('On-leash', 'Off-leash'), 'On-leash')",
@@ -35,6 +38,11 @@ class Park extends DataObject implements JsonSerializable
     ];
 
     private static $default_sort = "Title";
+
+	private static $has_one = [
+		'Photo' => Image::class,
+		'DogParkPhoto' => File::class
+	];
 
     public function validate()
     {
