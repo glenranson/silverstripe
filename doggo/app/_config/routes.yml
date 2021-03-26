@@ -1,0 +1,6 @@
+---
+Name: apiroutes
+---
+SilverStripe\Control\Director:
+  rules:
+    'api/v1/parks/$ID//$action': 'Doggo\Controller\ParkController'
