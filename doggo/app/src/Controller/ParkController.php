@@ -3,15 +3,45 @@
 namespace Doggo\Controller;
 
 use Doggo\Model\Park;
+use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\Form;
+use SilverStripe\Forms\FormAction;
+use SilverStripe\Forms\RequiredFields;
 
 class ParkController extends Controller 
 {
     private static $allowed_actions = [
         'index',
     ];
+
+    // Added upload frontend form with upload field
+		public function UploadForm()
+		{
+			$myForm = Form::create(
+				$this,
+				'UploadForm',
+				FieldList::create(
+					UploadField::create('photos','Upload your image')
+				),
+				FieldList::create(
+					FormAction::create('saveUploadedImage','Submit')
+				),
+				RequiredFields::create('photos')
+			);
+
+			return $myForm;
+		}
+
+		public function saveUploadedImage($data, $form)
+		{
+			$photo = $data['Photo'];
+
+			return $this->redirect('/some/success/url');
+		}
 
     public function index(HTTPRequest $request) 
     {

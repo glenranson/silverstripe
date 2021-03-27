@@ -39,10 +39,9 @@ class Park extends DataObject implements JsonSerializable
 
     private static $default_sort = "Title";
 
-	private static $has_one = [
-		'Photo' => Image::class,
-		'DogParkPhoto' => File::class
-	];
+		private static $has_one = [
+			'Photo' => Image::class
+		];
 
     public function validate()
     {
