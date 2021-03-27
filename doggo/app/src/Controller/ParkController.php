@@ -3,15 +3,68 @@
 namespace Doggo\Controller;
 
 use Doggo\Model\Park;
+use SilverStripe\Assets\File;
+use SilverStripe\Assets\Folder;
+use SilverStripe\Assets\Upload;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Dev\Debug;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
+use SilverStripe\Security\Security;
+
 
 class ParkController extends Controller 
 {
     private static $allowed_actions = [
         'index',
+	      'imageupload',
     ];
+
+
+		public function imageupload(HTTPRequest $request) {
+
+			if (!$request->isPOST()) {
+				return $this->json(['error' => 'Method not allowed'], 405);
+			}
+
+			$file = $request->postVar('file');
+
+			if (!isset($file)) {
+				return $this->httpError(500, 'File does not exist');
+			}
+			else {
+				// File uploading
+				$Uploads = 'client/uploads';
+
+				Folder::find_or_make($Uploads);
+
+				$uploaded = Upload::create();
+
+				// Create new file instance
+				$newfile = File::create();
+
+				$uploaded->loadIntoFile($file, $newfile, $Uploads);
+
+				// Upload check
+				if ($uploaded->isError() ) {
+					return $this->httpError(400, 'Error file');
+				}
+				else {
+					// Relate the file to the park photo field.
+					$Photo = $uploaded->getFile()->ID;
+
+					$id = $request->postVar('park');
+
+					// Update park
+					$park = Park::get_by_id($id);
+					$park->setField('PhotoID', $Photo);
+					$park->write();
+
+					return $this->json($park);
+				}
+			}
+		}
 
     public function index(HTTPRequest $request) 
     {
