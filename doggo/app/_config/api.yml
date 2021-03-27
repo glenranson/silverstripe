@@ -4,3 +4,7 @@ Name: api
 Doggo\Task\FetchParksTask:
   api_title: 'Wellington City Council'
   api_url: 'https://doggo-test.s3-ap-southeast-2.amazonaws.com/WCC_Dog_Areas_20200213.geojson'
+
+Doggo\Task\FetchPalmyParksTask:
+  api_title: 'Palmerston North City Council'
+  api_url: 'https://doggo-test.s3-ap-southeast-2.amazonaws.com/PNCC_Dog_Areas_20200213.geojson'
