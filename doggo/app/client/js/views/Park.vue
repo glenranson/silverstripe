@@ -8,97 +8,48 @@
             </ul>
             <p class="park__notes">{{ park.Notes }}</p>
             <p class="park__provider">Managed by <strong>{{ park.Provider }}</strong></p>
-
+             <img v-bind:src="imagePath" />
             <h3>Upload an image of your dog at this park</h3>
-            <div class="dropbox">
-                <input type="file" multiple :name="uploadFieldName" :disabled="isSaving" @change="filesChange($event.target.name, $event.target.files); fileCount = $event.target.files.length"
-                       accept="image/*" class="input-file">
-                <p v-if="isInitial">
-                    Drag your file(s) here to begin<br> or click to browse
-                </p>
-                <p v-if="isSaving">
-                    Uploading {{ fileCount }} files...
-                </p>
-            </div>
+            <label>File
+                <input type="file" id="file" ref="file" v-on:change="handleFileUpload()" />
+            </label>
+            <button v-on:click="submitFile()">Submit</button>
         </div>
     </form>
 </template>
 
 <script>
-import { upload } from '../file-upload.service';
-
-const STATUS_INITIAL = 0, STATUS_SAVING = 1, STATUS_SUCCESS = 2, STATUS_FAILED = 3;
+import * as axios from 'axios';
 
 export default {
-  name: 'app',
-  data() {
-    return {
-      uploadedFiles: [],
-      uploadError: null,
-      currentStatus: null,
-      uploadFieldName: 'photos'
-    }
-  },
   computed: {
+    imagePath() {
+      return this.park.PhotoURL;
+    },
     park() {
       return this.$store.state.parks.find(park => park.ID === parseInt(this.$route.params.id, 10));
     },
     parks() {
       return this.$store.state.parks;
     },
-    isInitial() {
-      return this.currentStatus === STATUS_INITIAL;
-    },
-    isSaving() {
-      return this.currentStatus === STATUS_SAVING;
-    },
-    isSuccess() {
-      return this.currentStatus === STATUS_SUCCESS;
-    },
-    isFailed() {
-      return this.currentStatus === STATUS_FAILED;
-    }
   },
   methods: {
-    reset() {
-      // reset form to initial state
-      this.currentStatus = STATUS_INITIAL;
-      this.uploadedFiles = [];
-      this.uploadError = null;
+      submitFile() {
+      let formData = new FormData();
+      formData.append('file', this.file);
+      formData.append('park', this.park.ID);
+      // You should have a server side REST API
+      axios.post('http://silverstripe:2666/api/v1/parks/$ID//imageupload',
+        formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      )
     },
-    save(formData) {
-      // upload data to the server
-      this.currentStatus = STATUS_SAVING;
-
-      upload(formData)
-        .then(x => {
-          this.uploadedFiles = [].concat(x);
-          this.currentStatus = STATUS_SUCCESS;
-        })
-        .catch(err => {
-          this.uploadError = err.response;
-          this.currentStatus = STATUS_FAILED;
-        });
+    handleFileUpload() {
+      this.file = this.$refs.file.files[0];
     },
-    filesChange(fieldName, fileList) {
-      // handle file changes
-      const formData = new FormData();
-
-      if (!fileList.length) return;
-
-      // append the files to FormData
-      Array
-        .from(Array(fileList.length).keys())
-        .map(x => {
-          formData.append(fieldName, fileList[x], fileList[x].name);
-        });
-
-      // save it
-      this.save(formData);
-    }
-  },
-  mounted() {
-    this.reset();
   },
 }
 
@@ -108,33 +59,10 @@ export default {
   .park {
     padding: 20px;
   }
-
-  .dropbox {
-      outline: 2px dashed grey; /* the dash box */
-      outline-offset: -10px;
-      background: lightcyan;
-      color: dimgray;
-      padding: 10px 10px;
-      min-height: 200px; /* minimum height */
-      position: relative;
-      cursor: pointer;
-  }
-
-  .input-file {
-      opacity: 0; /* invisible but it's there! */
-      width: 100%;
-      height: 200px;
-      position: absolute;
-      cursor: pointer;
-  }
-
-  .dropbox:hover {
-      background: lightblue; /* when mouse over to the drop zone, change color */
-  }
-
-  .dropbox p {
-      font-size: 1.2em;
-      text-align: center;
-      padding: 50px 0;
+  img {
+      width: 150px;
+      border-radius: 2px;
+      box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.5);
+      transition: width 1s;
   }
 </style>
