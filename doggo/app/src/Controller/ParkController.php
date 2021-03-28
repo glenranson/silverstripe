@@ -6,12 +6,9 @@ use Doggo\Model\Park;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Assets\Upload;
-use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Dev\Debug;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
-use SilverStripe\Security\Security;
 
 
 class ParkController extends Controller 
@@ -22,6 +19,14 @@ class ParkController extends Controller
     ];
 
 
+	/**
+	 * Custom Controller action  - To receive uploaded Image from front end.
+	 *
+	 * @param HTTPRequest $request
+	 * @return HTTPResponse|void
+	 * @throws \SilverStripe\Control\HTTPResponse_Exception
+	 * @throws \SilverStripe\ORM\ValidationException
+	 */
 		public function imageupload(HTTPRequest $request) {
 
 			if (!$request->isPOST()) {

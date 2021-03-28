@@ -38,8 +38,8 @@ export default {
       let formData = new FormData();
       formData.append('file', this.file);
       formData.append('park', this.park.ID);
-      // You should have a server side REST API
-      axios.post('http://silverstripe:2666/api/v1/parks/$ID//imageupload',
+      // Custom Silverstripe REST API.
+      axios.post('/api/v1/parks/$ID//imageupload',
         formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
