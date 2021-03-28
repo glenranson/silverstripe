@@ -1,0 +1,4 @@
+SilverStripe\Assets\File:
+  allowed_extensions:
+    - jpeg
+    - png

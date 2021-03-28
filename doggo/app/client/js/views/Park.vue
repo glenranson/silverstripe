@@ -11,7 +11,7 @@
              <img v-bind:src="imagePath" />
             <h3>Upload an image of your dog at this park</h3>
             <label>File
-                <input type="file" id="file" ref="file" v-on:change="handleFileUpload()" />
+                <input type="file" accept="image/*" id="file" alt="Image of a dog playing at a park" ref="file" v-on:change="handleFileUpload()" />
             </label>
             <button v-on:click="submitFile()">Submit</button>
         </div>

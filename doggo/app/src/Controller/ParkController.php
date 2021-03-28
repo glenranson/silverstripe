@@ -3,12 +3,14 @@
 namespace Doggo\Controller;
 
 use Doggo\Model\Park;
+use League\Csv\Exception;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Assets\Upload;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
+use SilverStripe\MimeValidator\MimeUploadValidator;
 
 
 class ParkController extends Controller 
@@ -36,20 +38,27 @@ class ParkController extends Controller
 			$file = $request->postVar('file');
 
 			if (!isset($file)) {
-				return $this->httpError(500, 'File does not exist');
+				return $this->httpError(500, 'File upload error');
 			}
 			else {
+
 				// File uploading
 				$Uploads = 'client/uploads';
 
 				Folder::find_or_make($Uploads);
 
 				$uploaded = Upload::create();
+				$uploaded->setValidator(MimeUploadValidator::create());
 
 				// Create new file instance
 				$newfile = File::create();
+				$newfile->validate();
 
-				$uploaded->loadIntoFile($file, $newfile, $Uploads);
+				try {
+					$uploaded->loadIntoFile($file, $newfile, $Uploads);
+				}catch (\Exception $e) {
+					return $this->httpError(400, 'Error file');
+				}
 
 				// Upload check
 				if ($uploaded->isError() ) {
