@@ -60,7 +60,7 @@ class Park extends DataObject implements JsonSerializable
     }
 
 	  /**
-	  * Probably an easier way to do this, but this helper function returns the park photo image URL.
+	  * Probably an easier way to do this, but this helper function returns the uploaded park image URL.
 	  *
 	  * @param $ID
 	  * @return string

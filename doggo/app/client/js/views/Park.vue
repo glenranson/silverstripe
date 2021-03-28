@@ -11,7 +11,7 @@
              <img v-bind:src="imagePath" />
             <h3>Upload an image of your dog at this park</h3>
             <label>File
-                <input type="file" id="file" ref="file" v-on:change="handleFileUpload()" />
+                <input type="file" accept="image/*" id="file" alt="Image of a dog playing at a park" ref="file" v-on:change="handleFileUpload()" />
             </label>
             <button v-on:click="submitFile()">Submit</button>
         </div>
@@ -38,8 +38,8 @@ export default {
       let formData = new FormData();
       formData.append('file', this.file);
       formData.append('park', this.park.ID);
-      // You should have a server side REST API
-      axios.post('http://silverstripe:2666/api/v1/parks/$ID//imageupload',
+      // Custom Silverstripe REST API.
+      axios.post('/api/v1/parks/$ID//imageupload',
         formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
